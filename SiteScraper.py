@@ -17,23 +17,24 @@ numberOfJobs = 20
 
 
 jobTitles = soup.find_all("a", attrs={"data-job-source":True})
-jobEmployer = soup.find_all("a", attrs={"title":"Job Search", "href":True})
+#jobEmployer = soup.find_all("a", attrs={"title":"Job Search", "href":True} )
+jobEmployer = soup.find_all("a", attrs={"href":True, "target":"_blank"})
 
 
-
-
-print(jobEmployer[1]['href'])
+for item in jobEmployer:
+    print(str(item['href'])+"\n")
 
 jobTitleList = []
 jobEmployerList = []
 fileHeaders = []
 
 
-
+#print(len(jobTitles), len(jobEmployer))
 #for i in range(numberOfJobs):
 #    jobTitleList.append(str(jobTitles[i]['title']))
+#    print(i ,jobEmployer[i]['href'])
 #    jobEmployerList.append(str(jobEmployer[i]['href']))
-#
+
 #print(jobEmployerList)
 #
 #fileHeaders.append("Job Titles")
