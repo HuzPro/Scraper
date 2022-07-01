@@ -24,24 +24,32 @@ jobEmployer = soup.find_all("a", attrs={"href":True, "target":"_blank"})
 for item in jobEmployer:
     print(str(item['href'])+"\n")
 
+print(len(jobEmployer))
+
 jobTitleList = []
 jobEmployerList = []
-fileHeaders = []
+jobLinkList = []
+fileHeaders = ["Job Titles", "Link Of Employer", "Link Of Job"]
 
 
-#print(len(jobTitles), len(jobEmployer))
-#for i in range(numberOfJobs):
-#    jobTitleList.append(str(jobTitles[i]['title']))
-#    print(i ,jobEmployer[i]['href'])
-#    jobEmployerList.append(str(jobEmployer[i]['href']))
+for i in range(numberOfJobs*2):
+    if i%2==0:
+        jobLinkList.append(str(jobEmployer[i]['href']))
+    else:
+        jobEmployerList.append(str(jobEmployer[i]['href']))
 
-#print(jobEmployerList)
-#
-#fileHeaders.append("Job Titles")
-#ws.append(fileHeaders)
-#
-#for i, row in enumerate(ws.iter_rows(min_row=1, max_row=numberOfJobs, max_col=1)):
-#    for cell in row:
-#        cell.value = jobTitleList[i]
-#
-#wb.save(progName+".xlsx")
+for i in range(numberOfJobs):
+    jobTitleList.append(str(jobTitles[i]['title']))
+
+
+
+
+ws.append(fileHeaders)
+
+for i, row in enumerate(ws.iter_rows(min_row=1, max_row=numberOfJobs, max_col=3)):
+    for cell in row:
+        cell.value = jobTitleList[i]
+        cell.value = jobEmployerList[i]
+        cell.value = jobLinkList[i]
+
+wb.save(progName+".xlsx")
