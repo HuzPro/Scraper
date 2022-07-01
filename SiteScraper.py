@@ -1,17 +1,46 @@
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag
 import requests
+from openpyxl import Workbook, load_workbook
+
+progName = "Artificial Intelligence Jobs"
+wb = Workbook()
+ws = wb.active
+ws.title = progName
 
 AISearchURL = "https://www.overseasjobs.com/job/search?Action=Search&keyword=Artificial%20Intelligence&country=US&location="
 AISearchURL2 = "https://www.adzuna.com/search?q=Artificial%20Intelligence&loc=151946&ac_where=1"
 
-result = requests.get(AISearchURL)
+r = requests.get(AISearchURL)
+soup = BeautifulSoup(r.content, "html5lib")
 
-doc = BeautifulSoup(result.text, "html.parser")
+numberOfJobs = 20
 
-jobTitles = doc.find_all("a", attrs={"data-job-source":True})
+
+jobTitles = soup.find_all("a", attrs={"data-job-source":True})
+jobEmployer = soup.find_all("a", attrs={"title":"Job Search", "href":True})
+
+
+
+
+print(jobEmployer[1]['href'])
+
 jobTitleList = []
-for i in range(20):
-    jobTitleList.append(str(jobTitles[i]['title']))
+jobEmployerList = []
+fileHeaders = []
 
-print(jobTitleList)
-print(len(jobTitleList))
+
+
+#for i in range(numberOfJobs):
+#    jobTitleList.append(str(jobTitles[i]['title']))
+#    jobEmployerList.append(str(jobEmployer[i]['href']))
+#
+#print(jobEmployerList)
+#
+#fileHeaders.append("Job Titles")
+#ws.append(fileHeaders)
+#
+#for i, row in enumerate(ws.iter_rows(min_row=1, max_row=numberOfJobs, max_col=1)):
+#    for cell in row:
+#        cell.value = jobTitleList[i]
+#
+#wb.save(progName+".xlsx")
