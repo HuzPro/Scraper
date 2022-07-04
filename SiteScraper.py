@@ -59,4 +59,3 @@ for i, col in enumerate(ws.iter_cols(min_row=2, max_row=numberOfJobs+1, max_col=
         if cell.column == 5: cell.value = jobLinkList[j]
 
 wb.save(progName+".xlsx")
-print("Done!!! :D")
