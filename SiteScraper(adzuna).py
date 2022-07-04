@@ -7,7 +7,7 @@ wb = Workbook()
 ws = wb.active
 ws.title = progName             #Worksheet(the active sheet in excel)'s name assignment
 
-AISearchURL = "https://www.adzuna.com/search?q=Artificial%20Intelligence&loc=151946&ac_where=1"
+AISearchURL = "https://www.adzuna.com/search?ac_where=2&loc=151946&q=Artificial%20Intelligence&p=1"
 
 r = requests.get(AISearchURL)                   #Sending request to website for html
 soup = BeautifulSoup(r.content, "html5lib")     #Parsing html (making it useable
