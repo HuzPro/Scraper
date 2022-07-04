@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup   #Beautiful Soup 4: Used to Parse raw HTML
 import requests                 #Requests: Used to send requests to websites
 from openpyxl import Workbook   #OpenPyxl: Used for excel file manipulation
 
-progName = "Artificial Intelligence Jobs"
+progName = "AI Jobs(overseasjobs)"
 wb = Workbook()
 ws = wb.active  #To work on the active worksheet
 ws.title = progName #Worksheet title = program name
