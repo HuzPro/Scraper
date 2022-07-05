@@ -1,3 +1,4 @@
+from time import sleep
 from bs4 import BeautifulSoup
 import requests
 from openpyxl import Workbook
@@ -48,32 +49,29 @@ page_Iter = 1
 JobTitle, JobLink, JobCompany, JobLocation, JobTimePosted, JobDescription = [], [], [], [], [], []
 FileHeader = ["Title", "Company", "Location", "Time Posted", "Link", "Description"]
 
-
-
-
-
-
-
-
 while True:
-    
     AI_overSeasJobsURL = "https://www.overseasjobs.com/job/search?keyword=Artificial%20Intelligence&Action=Search&country=US&location=&p="+str(page_Iter)
     r_AI_OSJ = requests.get(AI_overSeasJobsURL)
-    if requests.Response.ok:
+    if r_AI_OSJ.ok: #was false after 2nd iter 2 times now
         soup_AI_OSJ = BeautifulSoup(r_AI_OSJ.content, "html5lib")
         JobTitle, JobLink, JobCompany, JobTimePosted, JobLocation = OSJ_jobToVariable(soup_AI_OSJ, JobTitle, JobLink, JobCompany, JobTimePosted, JobLocation)
+        print("Saved page"+str(page_Iter)+"'s data from OverSeasJobs.com")
         page_Iter+=1
-    else: break
-
+    else:
+        print("Exited OverSeasJobs.com")
+        break
+page_Iter=1
 while True:
-    AI_AdzunaURL = "https://www.adzuna.com/search?q=Artificial%20Intelligence&loc=151946&ac_where="+str(page_Iter)
+    AI_AdzunaURL = "https://adzuna.com/search?ac_where=2&loc=151946&q=Artificial%20Intelligence&p="+str(page_Iter)
     r_AI_ADZ = requests.get(AI_AdzunaURL)
-    if requests.Response.ok or page_Iter==20:
+    if r_AI_ADZ.ok and page_Iter<=11:
         soup_AI_ADZ = BeautifulSoup(r_AI_ADZ.content, "html5lib")
         JobTitle, JobDescription, JobLink, JobCompany, JobLocation = ADZ_jobToVariable(soup_AI_ADZ, JobTitle, JobDescription, JobLink, JobCompany, JobLocation)
+        print("Saved page"+str(page_Iter)+"'s data from Adzuna.com")
         page_Iter+=1
-    else: break
-
+    else:
+        print("Exited Adzuna.com")
+        break
 
 
 ws.append(FileHeader)
