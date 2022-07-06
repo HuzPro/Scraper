@@ -4,6 +4,9 @@ from bs4 import BeautifulSoup
 import requests
 from openpyxl import Workbook
 from selenium import webdriver
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
 import phantomjs
 
 
@@ -50,7 +53,7 @@ def ADZ_jobToVariable(soup, Title, Description, Link, Company, Location):
 
 page_Iter = 1
 
-JobTitle, JobLink, JobCompany, JobLocation, JobTimePosted, JobDescription = [], [], [], [], [], []
+jobsLinkList, JobTitle, JobLink, JobCompany, JobLocation, JobTimePosted, JobDescription = [], [], [], [], [], [], []
 FileHeader = ["Title", "Company", "Location", "Time Posted", "Link", "Description"]
 
 #while True:
@@ -79,17 +82,27 @@ FileHeader = ["Title", "Company", "Location", "Time Posted", "Link", "Descriptio
 #        break
 
 RPK_AIE_Link = 'https://www.rozee.pk/job/jsearch/q/Artificial%20Intelligence%20Engineer/stype/title'
-browser = webdriver.PhantomJS()
+options = webdriver.ChromeOptions()
+options.add_argument('--window-size=1920,1080')
+options.add_argument("--headless")
+browser = webdriver.Chrome(executable_path="C:\\Users\\DSU\\Downloads\\chromedriver.exe", options=options)
 browser.get(RPK_AIE_Link)
-sleep(5)
+wait = WebDriverWait(browser, 3)
 r_RPK_AIE = browser.page_source
-soup_RPK_AIE = BeautifulSoup(r_RPK_AIE.text, "html.parser")
+soup_RPK_AIE = BeautifulSoup(r_RPK_AIE, "html.parser")
 
 
-print(soup_RPK_AIE.find_all("div", ))
-htmlfile = Path("C:\\Users\\DSU\\Documents\\HuzCode\\scraper\\htmlfile.html")
-with open("htmlfile.html", "w", encoding="utf-8") as htmlf:
-    htmlf.write(soup_RPK_AIE.prettify())
+
+
+makelink = soup_RPK_AIE.find_all("div", attrs={"class":"jobt float-left"})
+for x in range(len(makelink)):
+    jobsLinkList.append(makelink[x].find("a", attrs={"href":True})['href'])
+for link in jobsLinkList:
+    r_job = requests.get("https:"+link)
+    soup_job = BeautifulSoup(r_job.content, "html5lib")
+    JobTitle.append(str(soup_job.find_all("h1", attrs={"class":"jtitle font24 text-dark"})[0].text).replace("\n                                                    ",""))
+    print(JobTitle)
+    
 
 
 #ws.append(FileHeader)
