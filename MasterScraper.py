@@ -54,7 +54,7 @@ def ADZ_jobToVariable(soup, Title, Description, Link, Company, Location):
 page_Iter = 1
 
 jobsLinkList, JobTitle, JobLink, JobCompany, JobLocation, JobTimePosted, JobDescription = [], [], [], [], [], [], []
-FileHeader = ["Title", "Company", "Location", "Time Posted", "Link", "Description"]
+FileHeader = ["Title", "Link", "Company", "Location", "Time Posted", "Description"]
 
 #while True:
 #    AI_overSeasJobsURL = "https://www.overseasjobs.com/job/search?keyword=Artificial%20Intelligence&Action=Search&country=US&location=&p="+str(page_Iter)
@@ -100,8 +100,10 @@ for x in range(len(makelink)):
 for link in jobsLinkList:
     r_job = requests.get("https:"+link)
     soup_job = BeautifulSoup(r_job.content, "html5lib")
-    JobTitle.append(str(soup_job.find_all("h1", attrs={"class":"jtitle font24 text-dark"})[0].text).replace("\n                                                    ",""))
-    print(JobTitle)
+    JobTitle.append(str(soup_job.find_all("h1", attrs={"class":"jtitle font24 text-dark"})[0].text).replace("\n                                                    ","").replace("\n                                                ",""))
+    JobLink.append(str("https:"+link))
+    JobCompany.append(soup_job.find_all("div", attrs={"class":" pr-3"})[0].text)
+    print(JobCompany)
     
 
 
