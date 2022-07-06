@@ -1,7 +1,11 @@
+from pathlib import Path
 from time import sleep
 from bs4 import BeautifulSoup
 import requests
 from openpyxl import Workbook
+from selenium import webdriver
+import phantomjs
+
 
 progName = "AI Jobs(Master File)"
 wb = Workbook()
@@ -49,41 +53,55 @@ page_Iter = 1
 JobTitle, JobLink, JobCompany, JobLocation, JobTimePosted, JobDescription = [], [], [], [], [], []
 FileHeader = ["Title", "Company", "Location", "Time Posted", "Link", "Description"]
 
-while True:
-    AI_overSeasJobsURL = "https://www.overseasjobs.com/job/search?keyword=Artificial%20Intelligence&Action=Search&country=US&location=&p="+str(page_Iter)
-    r_AI_OSJ = requests.get(AI_overSeasJobsURL)
-    if r_AI_OSJ.ok: #was false after 2nd iter 2 times now
-        soup_AI_OSJ = BeautifulSoup(r_AI_OSJ.content, "html5lib")
-        JobTitle, JobLink, JobCompany, JobTimePosted, JobLocation = OSJ_jobToVariable(soup_AI_OSJ, JobTitle, JobLink, JobCompany, JobTimePosted, JobLocation)
-        print("Saved page"+str(page_Iter)+"'s data from OverSeasJobs.com")
-        page_Iter+=1
-    else:
-        print("Exited OverSeasJobs.com")
-        break
-page_Iter=1
-while True:
-    AI_AdzunaURL = "https://adzuna.com/search?ac_where=2&loc=151946&q=Artificial%20Intelligence&p="+str(page_Iter)
-    r_AI_ADZ = requests.get(AI_AdzunaURL)
-    if r_AI_ADZ.ok and page_Iter<=11:
-        soup_AI_ADZ = BeautifulSoup(r_AI_ADZ.content, "html5lib")
-        JobTitle, JobDescription, JobLink, JobCompany, JobLocation = ADZ_jobToVariable(soup_AI_ADZ, JobTitle, JobDescription, JobLink, JobCompany, JobLocation)
-        print("Saved page"+str(page_Iter)+"'s data from Adzuna.com")
-        page_Iter+=1
-    else:
-        print("Exited Adzuna.com")
-        break
+#while True:
+#    AI_overSeasJobsURL = "https://www.overseasjobs.com/job/search?keyword=Artificial%20Intelligence&Action=Search&country=US&location=&p="+str(page_Iter)
+#    r_AI_OSJ = requests.get(AI_overSeasJobsURL)
+#    if r_AI_OSJ.ok and page_Iter>=10: #was false after 2nd iter 2 times now
+#        soup_AI_OSJ = BeautifulSoup(r_AI_OSJ.content, "html5lib")
+#        JobTitle, JobLink, JobCompany, JobTimePosted, JobLocation = OSJ_jobToVariable(soup_AI_OSJ, JobTitle, JobLink, JobCompany, JobTimePosted, JobLocation)
+#        print("Saved page"+str(page_Iter)+"'s data from OverSeasJobs.com")
+#        page_Iter+=1
+#    else:
+#        print("Exited OverSeasJobs.com")
+#        break
+#
+#page_Iter=1
+#while True:
+#    AI_AdzunaURL = "https://adzuna.com/search?ac_where=2&loc=151946&q=Artificial%20Intelligence&p="+str(page_Iter)
+#    r_AI_ADZ = requests.get(AI_AdzunaURL)
+#    if r_AI_ADZ.ok and page_Iter<=10:
+#        soup_AI_ADZ = BeautifulSoup(r_AI_ADZ.content, "html5lib")
+#        JobTitle, JobDescription, JobLink, JobCompany, JobLocation = ADZ_jobToVariable(soup_AI_ADZ, JobTitle, JobDescription, JobLink, JobCompany, JobLocation)
+#        print("Saved page"+str(page_Iter)+"'s data from Adzuna.com")
+#        page_Iter+=1
+#    else:
+#        print("Exited Adzuna.com")
+#        break
+
+RPK_AIE_Link = 'https://www.rozee.pk/job/jsearch/q/Artificial%20Intelligence%20Engineer/stype/title'
+browser = webdriver.PhantomJS()
+browser.get(RPK_AIE_Link)
+sleep(5)
+r_RPK_AIE = browser.page_source
+soup_RPK_AIE = BeautifulSoup(r_RPK_AIE.text, "html.parser")
 
 
-ws.append(FileHeader)
-for col in ws.iter_cols(min_row=2, max_row=len(JobTitle)+1, max_col=len(FileHeader)):
-    for j, cell in enumerate(col):
-        try:
-            if cell.column == 1 and JobTitle[j]: cell.value = JobTitle[j]
-            if cell.column == 2 and JobCompany[j]: cell.value = JobCompany[j]
-            if cell.column == 3 and JobLocation[j]: cell.value = JobLocation[j]
-            if cell.column == 4 and JobTimePosted[j]: cell.value = JobTimePosted[j]
-            if cell.column == 5 and JobLink[j]: cell.value = JobLink[j]
-            if cell.column == 6 and JobDescription[j]: cell.value = JobDescription[j]
-        except IndexError: pass
+print(soup_RPK_AIE.find_all("div", ))
+htmlfile = Path("C:\\Users\\DSU\\Documents\\HuzCode\\scraper\\htmlfile.html")
+with open("htmlfile.html", "w", encoding="utf-8") as htmlf:
+    htmlf.write(soup_RPK_AIE.prettify())
 
-wb.save(progName+".xlsx")
+
+#ws.append(FileHeader)
+#for col in ws.iter_cols(min_row=2, max_row=len(JobTitle)+1, max_col=len(FileHeader)):
+#    for j, cell in enumerate(col):
+#        try:
+#            if cell.column == 1 and JobTitle[j]: cell.value = JobTitle[j]
+#            if cell.column == 2 and JobCompany[j]: cell.value = JobCompany[j]
+#            if cell.column == 3 and JobLocation[j]: cell.value = JobLocation[j]
+#            if cell.column == 4 and JobTimePosted[j]: cell.value = JobTimePosted[j]
+#            if cell.column == 5 and JobLink[j]: cell.value = JobLink[j]
+#            if cell.column == 6 and JobDescription[j]: cell.value = JobDescription[j]
+#        except IndexError: pass
+#
+#wb.save(progName+".xlsx")
