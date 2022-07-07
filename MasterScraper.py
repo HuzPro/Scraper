@@ -7,7 +7,6 @@ from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
-import phantomjs
 
 
 progName = "AI Jobs(Master File)"
@@ -43,9 +42,9 @@ def ADZ_jobToVariable(soup, Title, Description, Link, Company, Location):
     tempList = []
     for i in range(numOfJobs_ADZ):
         
-        Title.append(str(soup.find_all("a", attrs={"target":"_blank", "href":True, "class":"text-base md:text-2xl text-adzuna-green-500 hover:underline"})[i].text).replace("\n                    ","").replace("\n                ",""))
-        tempList.append(str(soup.find_all("div", attrs={"class":"text-sm md:text-base xl:flex xl:flex-wrap"})[i].text).replace("\n            \n            \n            \n            ","").replace("          \n          \n              ","").replace("\n          \n\n        ","").partition("-"))
-        Description.append(str(soup.find_all("span", attrs={"class":"max-snippet-height md:block md:overflow-hidden lg:h-auto lg:inline"})[i].text).replace("\n            ","").replace("\n            ",""))
+        Title.append(str(soup.find_all("a", attrs={"target":"_blank", "href":True, "class":"text-base md:text-2xl text-adzuna-green-500 hover:underline"})[i].text).strip())
+        tempList.append(str(soup.find_all("div", attrs={"class":"text-sm md:text-base xl:flex xl:flex-wrap"})[i].text).strip().partition("-"))
+        Description.append(str(soup.find_all("span", attrs={"class":"max-snippet-height md:block md:overflow-hidden lg:h-auto lg:inline"})[i].text).strip())
         Link.append(str(soup.find_all("a", attrs={"class":"text-base md:text-2xl text-adzuna-green-500 hover:underline", "href":True, "target":"_blank"})[i]["href"]))
         Company.append(tempList[i][0])
         Location.append(tempList[i][2])
@@ -87,25 +86,32 @@ options.add_argument('--window-size=1920,1080')
 options.add_argument("--headless")
 browser = webdriver.Chrome(executable_path="C:\\Users\\DSU\\Downloads\\chromedriver.exe", options=options)
 browser.get(RPK_AIE_Link)
-wait = WebDriverWait(browser, 3)
+wait = WebDriverWait(browser, 1)
 r_RPK_AIE = browser.page_source
 soup_RPK_AIE = BeautifulSoup(r_RPK_AIE, "html.parser")
 
 
 
-
+aList = []
 makelink = soup_RPK_AIE.find_all("div", attrs={"class":"jobt float-left"})
 for x in range(len(makelink)):
     jobsLinkList.append(makelink[x].find("a", attrs={"href":True})['href'])
 for link in jobsLinkList:
     r_job = requests.get("https:"+link)
     soup_job = BeautifulSoup(r_job.content, "html5lib")
-    JobTitle.append(str(soup_job.find_all("h1", attrs={"class":"jtitle font24 text-dark"})[0].text).replace("\n                                                    ","").replace("\n                                                ",""))
-    JobLink.append(str("https:"+link))
-    JobCompany.append(soup_job.find_all("div", attrs={"class":" pr-3"})[0].text)
-    print(JobCompany)
-    
+    #JobTitle.append(str(soup_job.find_all("h1", attrs={"class":"jtitle font24 text-dark"})[0].text).strip())
+    #JobLink.append(str("https:"+link))
+    #JobCompany.append(str(soup_job.find_all("h2", attrs={"class":"cname im1 font18 mr5 text-dark"})[0].text).strip())
+    tempvar = []
+    #tempvar.append(str(soup_job.find_all("h4", attrs={"class":"lh1 cname im2 font18 text-dark d-flex align-items-center"})[0].text).partition(","))
+    #JobLocation.append(str(tempvar[0][0]).strip() + ", " + str(tempvar[0][2]).strip())
+    #tempvar.append(str(soup_job.find_all("div", attrs={"class":"jblk col-pl-0"})[0].text).replace("Job Details","").replace("\n","").expandtabs().strip().split(" "))
+    tempvar.append(soup_job.find("div", attrs={"class":"jblk col-pl-0"}).find_all("div", attrs={"class":"row"})[0].text)
+    print(tempvar)
 
+
+#with open("htmltestsfile.html", "w", encoding="utf-8") as f:
+#    f.write(aList[0]+aList[1])
 
 #ws.append(FileHeader)
 #for col in ws.iter_cols(min_row=2, max_row=len(JobTitle)+1, max_col=len(FileHeader)):
