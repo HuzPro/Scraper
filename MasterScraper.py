@@ -102,12 +102,16 @@ for link in jobsLinkList:
     #JobTitle.append(str(soup_job.find_all("h1", attrs={"class":"jtitle font24 text-dark"})[0].text).strip())
     #JobLink.append(str("https:"+link))
     #JobCompany.append(str(soup_job.find_all("h2", attrs={"class":"cname im1 font18 mr5 text-dark"})[0].text).strip())
-    tempvar = []
+    
     #tempvar.append(str(soup_job.find_all("h4", attrs={"class":"lh1 cname im2 font18 text-dark d-flex align-items-center"})[0].text).partition(","))
     #JobLocation.append(str(tempvar[0][0]).strip() + ", " + str(tempvar[0][2]).strip())
     #tempvar.append(str(soup_job.find_all("div", attrs={"class":"jblk col-pl-0"})[0].text).replace("Job Details","").replace("\n","").expandtabs().strip().split(" "))
-    tempvar.append(soup_job.find("div", attrs={"class":"jblk col-pl-0"}).find_all("div", attrs={"class":"row"})[0].text)
-    print(tempvar)
+    listLen = len(soup_job.find("div", attrs={"class":"jblk col-pl-0"}).find_all("div", attrs={"class":"row"}))
+    for x in range(listLen):
+        tempvar = []
+        location = []
+        tempvar.append(str(soup_job.find("div", attrs={"class":"jblk col-pl-0"}).find_all("div", attrs={"class":"row"})[x].text).partition(":"))
+        print(str(tempvar[0][0]).strip() + ": " + str(tempvar[0][2]).strip())
 
 
 #with open("htmltestsfile.html", "w", encoding="utf-8") as f:
