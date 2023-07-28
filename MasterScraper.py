@@ -84,7 +84,7 @@ RPK_AIE_Link = 'https://www.rozee.pk/job/jsearch/q/Artificial%20Intelligence%20E
 options = webdriver.ChromeOptions()
 options.add_argument('--window-size=1920,1080')
 options.add_argument("--headless")
-browser = webdriver.Chrome(executable_path="C:\\Users\\DSU\\Downloads\\chromedriver.exe", options=options)
+browser = webdriver.Chrome(executable_path="path to chrome.exe", options=options)
 browser.get(RPK_AIE_Link)
 wait = WebDriverWait(browser, 1)
 r_RPK_AIE = browser.page_source
